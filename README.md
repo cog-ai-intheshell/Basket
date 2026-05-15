@@ -128,7 +128,7 @@ Smoke training:
 Larger training run:
 
 ```bash
-.venv/bin/python -m basketball_sim.models.train_world_model --config dataset_config --max-shots 3000 --epochs 8 --history-steps 12 --horizon-steps 30 --d-model 192 --num-heads 12 --num-layers 6 --batch-size 256 --augmentation mixed --augmented-fraction 0.85 --min-label1-fraction 0.20 --candidate-limit 30000 --split-by shot --metric-horizons 1,5,10,30 --output-dir models/world_model
+.venv/bin/python -m basketball_sim.models.train_world_model --config dataset_config --max-shots 4500 --epochs 6 --history-steps 12 --horizon-steps 30 --d-model 192 --num-heads 12 --num-layers 6 --batch-size 256 --augmentation mixed --augmented-fraction 0.85 --min-label1-fraction 0.20 --candidate-limit 45000 --split-by shot --metric-horizons 1,5,10,30 --output-dir models/world_model
 ```
 
 Important training options:
@@ -143,13 +143,14 @@ Important training options:
 Current reference run:
 
 ```txt
-shots: 3000
-label 1 shots: 600 (20.0%)
+shots: 4500
+label 1 shots: 900 (20.0%)
+windows: 190739
 validation split: full unseen shots
-t+1 RMSE: 0.0696 m
-t+5 RMSE: 0.0648 m
-t+10 RMSE: 0.0633 m
-t+30 RMSE: 0.1255 m
+t+1 RMSE: 0.0647 m
+t+5 RMSE: 0.0570 m
+t+10 RMSE: 0.0615 m
+t+30 RMSE: 0.1270 m
 ```
 
 ## Momentum Classifier
@@ -170,7 +171,7 @@ history + context -> world_model.encode(...) -> latent -> XGBoost -> P(momentum)
 Extract latents:
 
 ```bash
-.venv/bin/python -m basketball_sim.models.build_momentum_latents --config dataset_config --world-model-dir models/world_model --output-dir models/momentum_xgb --max-shots 3000 --augmentation mixed --augmented-fraction 0.85 --min-label1-fraction 0.20 --candidate-limit 30000
+.venv/bin/python -m basketball_sim.models.build_momentum_latents --config dataset_config --world-model-dir models/world_model --output-dir models/momentum_xgb --max-shots 4500 --augmentation mixed --augmented-fraction 0.85 --min-label1-fraction 0.20 --candidate-limit 45000
 ```
 
 Train XGBoost:
@@ -189,12 +190,12 @@ Current Optuna-tuned reference classifier:
 
 ```txt
 latent_dim: 192
-threshold: 0.585
-validation accuracy: 0.8783
-validation precision: 0.7135
-validation recall: 0.6013
-validation F1: 0.6526
-validation confusion: TP=2187, TN=14613, FP=878, FN=1450
+threshold: 0.650
+validation accuracy: 0.8651
+validation precision: 0.7326
+validation recall: 0.6089
+validation F1: 0.6650
+validation confusion: TP=3822, TN=20877, FP=1395, FN=2455
 ```
 
 ## Backward Compatibility
