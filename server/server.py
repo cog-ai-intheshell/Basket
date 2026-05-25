@@ -2,7 +2,7 @@
 
 Start it from the project root after training a model:
 
-    .venv/bin/python -m basketball_sim.serving.world_model_server --model-dir models/world_model --port 8765
+    .venv/bin/python -m server.server --model-dir model/artifacts/world_model --port 8765
 """
 
 from __future__ import annotations
@@ -23,13 +23,13 @@ import numpy as np
 import torch
 
 
-from basketball_sim.models.features import (
+from model.common.features import (
     apply_scaler,
     context_vector,
     invert_scaler,
     sequence_vector,
 )
-from basketball_sim.models.world_model import TemporalTransformerWorldModel, WorldModelConfig
+from model.models_design.world_model import TemporalTransformerWorldModel, WorldModelConfig
 
 
 class JsonXGBoostBinaryClassifier:
@@ -194,7 +194,7 @@ def load_engine(model_dir: Path, device_name: str, momentum_model_path: Path | N
     if not checkpoint_path.exists() or not scaler_path.exists():
         raise FileNotFoundError(
             f"Missing model artifacts in {model_dir}. "
-            "Train first with python -m basketball_sim.models.train_world_model."
+            "Train first with python -m model.training.train_world_model."
         )
 
     device = pick_device(device_name)
@@ -289,11 +289,11 @@ def make_handler(engine: InferenceEngine | None, load_error: str | None):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model-dir", default="models/world_model")
+    parser.add_argument("--model-dir", default="model/artifacts/world_model")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--device", default="auto")
-    parser.add_argument("--momentum-model", default="models/momentum_xgb/momentum_xgb.json")
+    parser.add_argument("--momentum-model", default="model/artifacts/momentum_xgb/momentum_xgb.json")
     args = parser.parse_args()
 
     model_dir = Path(args.model_dir).resolve()

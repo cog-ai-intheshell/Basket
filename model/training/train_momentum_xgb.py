@@ -72,9 +72,9 @@ def load_metadata(path: Path | None) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--latents-path", default="models/momentum_xgb/momentum_latents.npz")
-    parser.add_argument("--metadata-path", default="models/momentum_xgb/momentum_latents_config.json")
-    parser.add_argument("--output-dir", default="models/momentum_xgb")
+    parser.add_argument("--latents-path", default="model/artifacts/momentum_xgb/momentum_latents.npz")
+    parser.add_argument("--metadata-path", default="model/artifacts/momentum_xgb/momentum_latents_config.json")
+    parser.add_argument("--output-dir", default="model/artifacts/momentum_xgb")
     parser.add_argument("--xgb-rounds", type=int, default=450)
     parser.add_argument("--early-stopping-rounds", type=int, default=35)
     parser.add_argument("--eta", type=float, default=0.035)

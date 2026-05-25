@@ -16,7 +16,7 @@ import numpy as np
 import optuna
 import xgboost as xgb
 
-from basketball_sim.models.train_momentum_xgb import (
+from model.training.train_momentum_xgb import (
     binary_metrics,
     load_metadata,
     threshold_search,
@@ -119,9 +119,9 @@ def plain_json(value: Any) -> Any:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--latents-path", default="models/momentum_xgb/momentum_latents.npz")
-    parser.add_argument("--metadata-path", default="models/momentum_xgb/momentum_latents_config.json")
-    parser.add_argument("--output-dir", default="models/momentum_xgb")
+    parser.add_argument("--latents-path", default="model/artifacts/momentum_xgb/momentum_latents.npz")
+    parser.add_argument("--metadata-path", default="model/artifacts/momentum_xgb/momentum_latents_config.json")
+    parser.add_argument("--output-dir", default="model/artifacts/momentum_xgb")
     parser.add_argument("--trials", type=int, default=40)
     parser.add_argument("--timeout", type=int, default=0, help="Optuna timeout in seconds. 0 = no timeout.")
     parser.add_argument("--xgb-rounds", type=int, default=700)
@@ -248,4 +248,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

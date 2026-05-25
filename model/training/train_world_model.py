@@ -2,13 +2,13 @@
 
 Example quick smoke run:
 
-    .venv/bin/python -m basketball_sim.models.train_world_model \
+    .venv/bin/python -m model.training.train_world_model \
       --config dataset_config_test --max-shots 2 --epochs 2 \
       --d-model 48 --num-heads 12 --num-layers 1
 
 Recommended larger run:
 
-    .venv/bin/python -m basketball_sim.models.train_world_model \
+    .venv/bin/python -m model.training.train_world_model \
       --config dataset_config --max-shots 400 --epochs 40
 """
 
@@ -25,9 +25,9 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from basketball_sim.dataset.generate import apply_config, simulate_shot, wind_at
-from basketball_sim.dataset.grid import ShotParams, iter_parameter_combinations, load_config_module
-from basketball_sim.models.features import (
+from dataset_generation.generate import apply_config, simulate_shot, wind_at
+from dataset_generation.grid import ShotParams, iter_parameter_combinations, load_config_module
+from model.common.features import (
     CONTEXT_FEATURES,
     SEQUENCE_FEATURES,
     TARGET_FEATURES,
@@ -35,7 +35,7 @@ from basketball_sim.models.features import (
     fit_scaler,
     make_windows,
 )
-from basketball_sim.models.world_model import TemporalTransformerWorldModel, WorldModelConfig
+from model.models_design.world_model import TemporalTransformerWorldModel, WorldModelConfig
 
 
 PHYSICAL_KEY_FIELDS = (
@@ -424,7 +424,7 @@ def save_artifacts(model, config, scalers, args, output_dir: Path, metrics: dict
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="dataset_config_test")
-    parser.add_argument("--output-dir", default="models/world_model")
+    parser.add_argument("--output-dir", default="model/artifacts/world_model")
     parser.add_argument("--max-shots", type=int, default=20, help="0 = all combinations.")
     parser.add_argument("--history-steps", type=int, default=12)
     parser.add_argument("--horizon-steps", type=int, default=30)

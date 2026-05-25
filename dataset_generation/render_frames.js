@@ -16,7 +16,7 @@ function parseArgs(argv) {
   const args = {
     datasetDir: "generated_dataset",
     manifest: null,
-    app: path.resolve("ai-cameras.html"),
+    app: path.resolve("interface/ai-cameras.html"),
     browser: null,
     width: 1536,
     height: 960,
@@ -62,12 +62,12 @@ function parseArgs(argv) {
 
 function printHelp() {
   console.log(`Usage:
-  node dataset_builder/render_frames.js --dataset-dir generated_dataset_test
+  node dataset_generation/render_frames.js --dataset-dir generated_dataset_test
 
 Options:
   --dataset-dir DIR       Directory containing frames_manifest.csv
   --manifest FILE         Explicit path to frames_manifest.csv
-  --app FILE              Path to ai-cameras.html
+  --app FILE              Path to interface/ai-cameras.html
   --browser FILE          Path to Brave/Chromium/Chrome
   --width PX              Viewport width, default 1536
   --height PX             Viewport height, default 960

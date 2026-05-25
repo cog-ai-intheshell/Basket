@@ -4,8 +4,8 @@ This configuration produces exactly 2 observations:
 - one no-wind observation;
 - one chaotic-wind observation.
 
-.venv/bin/python -m basketball_sim.dataset.generate --config dataset_config_test --output-dir generated_dataset_config_test --max-shots 0 --frame-stride 1
-node dataset_builder/render_frames.js --dataset-dir generated_dataset_config_test --force
+.venv/bin/python -m dataset_generation.generate --config dataset_config_test --output-dir generated_dataset_config_test --max-shots 0 --frame-stride 1
+node dataset_generation/render_frames.js --dataset-dir generated_dataset_config_test --force
 
 """
 

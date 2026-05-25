@@ -1,7 +1,7 @@
 """Generate dataset CSV files and the multi-view frame manifest.
 
 Recommended smoke command:
-    .venv/bin/python -m basketball_sim.dataset.generate --max-shots 5
+    .venv/bin/python -m dataset_generation.generate --max-shots 5
 
 By default, generation is capped at 10 shots to avoid producing a huge dataset
 by accident. Use --max-shots 0 to generate every combination.
@@ -938,7 +938,7 @@ def main() -> None:
     if not args.no_frame_manifest:
         print("Frames                  : manifest only")
         print("                           exact rendering should come from ai-cameras.html")
-        print(f"Frame render command    : node dataset_builder/render_frames.js --dataset-dir {output_dir}")
+        print(f"Frame render command    : node dataset_generation/render_frames.js --dataset-dir {output_dir}")
 
 
 if __name__ == "__main__":

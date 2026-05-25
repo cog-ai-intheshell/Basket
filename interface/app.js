@@ -34,14 +34,14 @@ const CAMERA_VIEWS = Object.freeze({
 });
 const WIND_VISUALIZATION_MODES = ["vector", "field", "volume"];
 const WIND_VISUALIZATION_LABELS = Object.freeze({
-  vector: "Champ",
+  vector: "Field",
   field: "Volume",
-  volume: "Vecteurs",
+  volume: "Vectors",
 });
 const WIND_VISUALIZATION_TITLES = Object.freeze({
-  vector: "Passer en carte de champ",
-  field: "Passer en volume 3D",
-  volume: "Revenir en visualisation vecteurs",
+  vector: "Switch to field map",
+  field: "Switch to 3D volume",
+  volume: "Return to vector view",
 });
 const WORLD_MODEL_ENDPOINT = "http://127.0.0.1:8765/predict";
 const WORLD_MODEL_HISTORY_STEPS = 12;
@@ -49,22 +49,22 @@ const WORLD_MODEL_HORIZON_STEPS = 30;
 const WORLD_MODEL_MIN_INTERVAL_MS = 120;
 
 const WIND_REGIME_NAMES = {
-  0: "vent nul",
-  1: "vent constant",
-  2: "vent random",
-  3: "vent markovien",
-  4: "vent cyclique",
-  5: "rafales",
-  6: "changement brutal",
+  0: "no wind",
+  1: "constant wind",
+  2: "random wind",
+  3: "markovian wind",
+  4: "cyclical wind",
+  5: "gusts",
+  6: "sudden shift",
   7: "mean reversion",
-  8: "clustering volatilité",
+  8: "volatility clustering",
   9: "jump / news shock",
-  10: "pump & fade",
-  11: "cascade liquidations",
+  10: "pump and fade",
+  11: "liquidation cascade",
   12: "liquidity wall",
   13: "squeeze breakout",
   14: "hidden regime switching",
-  15: "vent chaotique",
+  15: "chaotic wind",
 };
 
 const SHOTS_COLUMNS = [
@@ -331,9 +331,9 @@ function applyTheme(theme) {
   dom.themeToggle.textContent = nextTheme === "dark" ? "☀" : "☾";
   dom.themeToggle.setAttribute(
     "aria-label",
-    nextTheme === "dark" ? "Activer le light mode" : "Activer le dark mode"
+    nextTheme === "dark" ? "Enable light mode" : "Enable dark mode"
   );
-  dom.themeToggle.title = nextTheme === "dark" ? "Activer le light mode" : "Activer le dark mode";
+  dom.themeToggle.title = nextTheme === "dark" ? "Enable light mode" : "Enable dark mode";
   dom.themeToggle.setAttribute("aria-pressed", String(nextTheme === "dark"));
   localStorage.setItem("basketball-simulator-theme", nextTheme);
   requestAnimationFrame(drawScene);
@@ -353,8 +353,8 @@ function readStoredWindVisualizationMode() {
 }
 
 function updateWindVisualizationButton() {
-  dom.windVizToggle.textContent = WIND_VISUALIZATION_LABELS[windVisualizationMode] || "Champ";
-  dom.windVizToggle.title = WIND_VISUALIZATION_TITLES[windVisualizationMode] || "Passer en carte de champ";
+  dom.windVizToggle.textContent = WIND_VISUALIZATION_LABELS[windVisualizationMode] || "Field";
+  dom.windVizToggle.title = WIND_VISUALIZATION_TITLES[windVisualizationMode] || "Switch to field map";
   dom.windVizToggle.setAttribute("aria-pressed", String(windVisualizationMode !== "vector"));
   dom.windVizToggle.setAttribute("aria-label", dom.windVizToggle.title);
 }
@@ -380,7 +380,7 @@ function updateWorldModelButton() {
     ready: hasMomentum
       ? `World model active: blue trajectory, momentum ${momentumPercent}%`
       : "World model active: predicted trajectory in blue",
-    offline: "World model unavailable: run python -m basketball_sim.serving.world_model_server",
+    offline: "World model unavailable: run ./start_server.sh",
   };
   dom.worldModelToggle.textContent = worldModelEnabled && hasMomentum ? `M ${momentumPercent}%` : "WM";
   dom.worldModelToggle.setAttribute("aria-pressed", String(worldModelEnabled));
@@ -1121,7 +1121,7 @@ function simulateShot(params) {
   const verticalAngle = degToRad(params.verticalAngle);
   const horizontalAngle = degToRad(params.horizontalAngle);
 
-  // The UI keeps the requested label "Force initiale"; numerically it controls launch speed in m/s.
+  // The UI label is "Initial force"; numerically it controls launch speed in m/s.
   const initialSpeed = params.initialForce;
   let position = [PLAYER_X, PLAYER_Y, params.releaseHeight];
   let velocity = [
@@ -1176,7 +1176,7 @@ function simulateShot(params) {
 
   const metadata = {
     label,
-    result: label === 1 ? "PANIER" : "ÉCHEC",
+    result: label === 1 ? "MADE" : "MISSED",
     minHoopDistance: finalMinDistance,
     collisionTime,
     windContext,
@@ -1234,8 +1234,8 @@ function isAnimationAtEnd() {
 function updatePlaybackControls() {
   if (!state) {
     dom.playButton.dataset.mode = "play";
-    dom.playButton.setAttribute("aria-label", "Lire");
-    dom.playButton.title = "Lire";
+    dom.playButton.setAttribute("aria-label", "Play");
+    dom.playButton.title = "Play";
     dom.stepBackButton.disabled = true;
     dom.stepForwardButton.disabled = true;
     return;
@@ -1243,9 +1243,9 @@ function updatePlaybackControls() {
 
   const mode = state.playing ? "pause" : isAnimationAtEnd() ? "replay" : "play";
   const labels = {
-    play: "Lire",
+    play: "Play",
     pause: "Pause",
-    replay: "Rejouer depuis le début",
+    replay: "Replay from start",
   };
   dom.playButton.dataset.mode = mode;
   dom.playButton.setAttribute("aria-label", labels[mode]);
@@ -1261,24 +1261,24 @@ function updateTitles() {
   const row = state.rows[state.frameIndex];
   const result = state.metadata.result;
   dom.resultTitle.textContent = result;
-  dom.resultTitle.className = result === "PANIER" ? "result-made" : "result-fail";
+  dom.resultTitle.className = result === "MADE" ? "result-made" : "result-fail";
   dom.timeTitle.innerHTML = `t = ${row.time.toFixed(2)} s &nbsp; (timestep ${row.timestep} / ${MAX_STEPS})`;
 }
 
 function renderResults() {
-  const resultClass = state.metadata.result === "PANIER" ? "metric-made" : "metric-fail";
+  const resultClass = state.metadata.result === "MADE" ? "metric-made" : "metric-fail";
   const collision = state.metadata.collisionTime == null ? "-" : `${state.metadata.collisionTime.toFixed(2)} s`;
   const rows = [
     ["Label", state.metadata.label],
-    ["Résultat", `<span class="${resultClass}">${state.metadata.result}</span>`],
-    ["Distance au panier", `${state.params.distanceToHoop.toFixed(1)} m`],
-    ["Distance minimale au panier", `${state.metadata.minHoopDistance.toFixed(3)} m`],
+    ["Result", `<span class="${resultClass}">${state.metadata.result}</span>`],
+    ["Distance to hoop", `${state.params.distanceToHoop.toFixed(1)} m`],
+    ["Minimum distance to hoop", `${state.metadata.minHoopDistance.toFixed(3)} m`],
     ["Collision time", collision],
-    ["Régime de vent", state.params.windRegime],
-    ["Couplage x,y,z", state.params.windSpatialCoupling ? "activé" : "désactivé"],
-    ["Force du vent", `${state.params.windStrength.toFixed(1)} m/s`],
-    ["Orientation horizontale", `${state.params.windOrientation.toFixed(1)}°`],
-    ["Orientation verticale", `${state.params.windVerticalOrientation.toFixed(1)}°`],
+    ["Wind regime", state.params.windRegime],
+    ["Spatial coupling x,y,z", state.params.windSpatialCoupling ? "enabled" : "disabled"],
+    ["Wind strength", `${state.params.windStrength.toFixed(1)} m/s`],
+    ["Horizontal orientation", `${state.params.windOrientation.toFixed(1)} deg`],
+    ["Vertical orientation", `${state.params.windVerticalOrientation.toFixed(1)} deg`],
   ];
   dom.resultsBody.innerHTML = rows
     .map(([key, value]) => `<tr><td>${key}</td><td>${value}</td></tr>`)
@@ -2576,7 +2576,7 @@ function drawColorbar(ctx, width, height) {
   ctx.strokeStyle = colors.colorbarBorder;
   ctx.lineWidth = 1;
   ctx.strokeRect(x, y, barWidth, barHeight);
-  drawText(ctx, "||V vent||", x + barWidth / 2, y - 42, { font: "15px Inter, system-ui, sans-serif" });
+  drawText(ctx, "||V wind||", x + barWidth / 2, y - 42, { font: "15px Inter, system-ui, sans-serif" });
   drawText(ctx, "(m/s)", x + barWidth / 2, y - 20, { font: "15px Inter, system-ui, sans-serif" });
 
   const ticks = niceTicks(0, state.colorMax, 6);

@@ -9,15 +9,15 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from basketball_sim.dataset.grid import load_config_module
-from basketball_sim.models.features import apply_scaler
-from basketball_sim.models.train_world_model import (
+from dataset_generation.grid import load_config_module
+from model.common.features import apply_scaler
+from model.training.train_world_model import (
     collect_samples,
     count_labels_for_shots,
     pick_device,
     split_indices_by_shot,
 )
-from basketball_sim.models.world_model import TemporalTransformerWorldModel, WorldModelConfig
+from model.models_design.world_model import TemporalTransformerWorldModel, WorldModelConfig
 
 
 def load_world_model(model_dir: Path, device: torch.device):
@@ -53,8 +53,8 @@ def extract_latents(model, sequences, contexts, batch_size: int, device: torch.d
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="dataset_config")
-    parser.add_argument("--world-model-dir", default="models/world_model")
-    parser.add_argument("--output-dir", default="models/momentum_xgb")
+    parser.add_argument("--world-model-dir", default="model/artifacts/world_model")
+    parser.add_argument("--output-dir", default="model/artifacts/momentum_xgb")
     parser.add_argument("--max-shots", type=int, default=3000)
     parser.add_argument("--history-steps", type=int, default=0)
     parser.add_argument("--horizon-steps", type=int, default=0)

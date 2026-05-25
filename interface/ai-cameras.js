@@ -30,22 +30,22 @@ const CAMERA_FEEDS = Object.freeze({
 });
 
 const WIND_REGIME_NAMES = {
-  0: "vent nul",
-  1: "vent constant",
-  2: "vent random",
-  3: "vent markovien",
-  4: "vent cyclique",
-  5: "rafales",
-  6: "changement brutal",
+  0: "no wind",
+  1: "constant wind",
+  2: "random wind",
+  3: "markovian wind",
+  4: "cyclical wind",
+  5: "gusts",
+  6: "sudden shift",
   7: "mean reversion",
-  8: "clustering volatilité",
+  8: "volatility clustering",
   9: "jump / news shock",
-  10: "pump & fade",
-  11: "cascade liquidations",
+  10: "pump and fade",
+  11: "liquidation cascade",
   12: "liquidity wall",
   13: "squeeze breakout",
   14: "hidden regime switching",
-  15: "vent chaotique",
+  15: "chaotic wind",
 };
 
 const sliderFormat = {
@@ -252,9 +252,9 @@ function applyTheme(theme) {
     dom.themeToggle.textContent = nextTheme === "dark" ? "☀" : "☾";
     dom.themeToggle.setAttribute(
       "aria-label",
-      nextTheme === "dark" ? "Activer le light mode" : "Activer le dark mode"
+      nextTheme === "dark" ? "Enable light mode" : "Enable dark mode"
     );
-    dom.themeToggle.title = nextTheme === "dark" ? "Activer le light mode" : "Activer le dark mode";
+    dom.themeToggle.title = nextTheme === "dark" ? "Enable light mode" : "Enable dark mode";
     dom.themeToggle.setAttribute("aria-pressed", String(nextTheme === "dark"));
     localStorage.setItem("basketball-simulator-theme", nextTheme);
   }
@@ -958,7 +958,7 @@ function simulateShot(params) {
     windContext,
     metadata: {
       label,
-      result: label === 1 ? "PANIER" : "ÉCHEC",
+      result: label === 1 ? "MADE" : "MISSED",
       minHoopDistance: finalMinDistance,
       collisionTime,
     },
@@ -1942,7 +1942,7 @@ function updateTitles() {
   const row = state.rows[state.frameIndex];
   const result = state.metadata.result;
   dom.resultTitle.textContent = result;
-  dom.resultTitle.className = result === "PANIER" ? "result-made" : "result-fail";
+  dom.resultTitle.className = result === "MADE" ? "result-made" : "result-fail";
   dom.timeTitle.textContent = `t = ${row.time.toFixed(2)} s (timestep ${row.timestep} / ${MAX_STEPS})`;
 }
 
@@ -1952,12 +1952,12 @@ function renderStats() {
   }
   const collision = state.metadata.collisionTime == null ? "-" : `${state.metadata.collisionTime.toFixed(2)} s`;
   const row = state.rows[state.frameIndex];
-  const resultClass = state.metadata.result === "PANIER" ? "metric-made" : "metric-fail";
+  const resultClass = state.metadata.result === "MADE" ? "metric-made" : "metric-fail";
   const rows = [
-    ["Label cible", state.metadata.label, "Résultat", `<span class="${resultClass}">${state.metadata.result}</span>`],
-    ["Distance panier", `${state.params.distanceToHoop.toFixed(1)} m`, "Distance min", `${state.metadata.minHoopDistance.toFixed(3)} m`],
-    ["Collision time", collision, "Régime vent", state.params.windRegime],
-    ["Frame active", row.timestep, "Vitesse balle", `${row.speed_norm.toFixed(2)} m/s`],
+    ["Target label", state.metadata.label, "Result", `<span class="${resultClass}">${state.metadata.result}</span>`],
+    ["Hoop distance", `${state.params.distanceToHoop.toFixed(1)} m`, "Minimum distance", `${state.metadata.minHoopDistance.toFixed(3)} m`],
+    ["Collision time", collision, "Wind regime", state.params.windRegime],
+    ["Active frame", row.timestep, "Ball speed", `${row.speed_norm.toFixed(2)} m/s`],
   ];
   dom.aiStatsBody.innerHTML = rows
     .map(([k1, v1, k2, v2]) => `<tr><td>${k1}</td><td>${v1}</td><td>${k2}</td><td>${v2}</td></tr>`)
@@ -1988,8 +1988,8 @@ function updatePlaybackControls() {
   }
   if (!state) {
     dom.playButton.dataset.mode = "play";
-    dom.playButton.setAttribute("aria-label", "Lire");
-    dom.playButton.title = "Lire";
+    dom.playButton.setAttribute("aria-label", "Play");
+    dom.playButton.title = "Play";
     dom.stepBackButton.disabled = true;
     dom.stepForwardButton.disabled = true;
     return;
@@ -1997,9 +1997,9 @@ function updatePlaybackControls() {
 
   const mode = state.playing ? "pause" : isAnimationAtEnd() ? "replay" : "play";
   const labels = {
-    play: "Lire",
+    play: "Play",
     pause: "Pause",
-    replay: "Rejouer depuis le début",
+    replay: "Replay from start",
   };
   dom.playButton.dataset.mode = mode;
   dom.playButton.setAttribute("aria-label", labels[mode]);

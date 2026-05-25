@@ -11,8 +11,8 @@ from . import config as default_config
 
 
 CONFIG_ALIASES = {
-    "dataset_config": "basketball_sim.dataset.config",
-    "dataset_config_test": "basketball_sim.dataset.config_test",
+    "dataset_config": "dataset_generation.config",
+    "dataset_config_test": "dataset_generation.config_test",
 }
 
 
