@@ -344,7 +344,7 @@ function toggleTheme() {
 }
 
 function readStoredTheme() {
-  return localStorage.getItem("basketball-simulator-theme") === "dark" ? "dark" : "light";
+  return localStorage.getItem("basketball-simulator-theme") === "light" ? "light" : "dark";
 }
 
 function readStoredWindVisualizationMode() {
